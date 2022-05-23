@@ -30,7 +30,7 @@ Apesar dos grandes avanços na prevenção e tratamento, a NF continua sendo uma
 <!-- Comentar aqui quais os parâmetros que serão utilizados para a predição? Comentar que é um modelo de classificação pq a ideia é definir se o paciente vai morrer ou não (categórico) em decorrência da NF? -->
 
 - É possível criar modelos de prognóstico para predizer a morte em decorrência da NF a partir dos dados sintéticos disponibilizados?
-- Quais os resultados obtidos pelos modelos?
+- Quais os resultados obtidos pelos modelos? Qual deles se desempenhou melhor?
 - O modelo que apresentou os melhores resultados é robusto o suficiente para ser aplicado em um conjunto diferente de dados?
 
 ### Ferramentas
