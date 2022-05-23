@@ -21,29 +21,24 @@ No entanto, existe toda uma problemática relacionada ao uso de dados reais de p
 
 Assim, o objetivo geral deste projeto é montar um ou mais modelos de prognóstico que realizem a predição de mortalidade de pacientes sintéticos gerados em cenários fictícios. Dentre as diversas condições e doenças disponíveis nos conjuntos de dados disponibilizados, optou-se por explorar os casos de neutropenia febril, um tema que já havia sido explorado no primeiro projeto da disciplina.
 
-Frequentemente, os pacientes que passam por quimioterapia apresentam uma diminuição na contagem de células sanguíneas. Em especial, a diminuição da contagem dos neutrófilos - glóbulos brancos responsáveis pela defesa contra bactérias e fungos - se denomina neutropenia. Tal quadro aumenta o risco de infecção e febre, podendo gerar o que se conhece como neutropenia febril (NF). Ainda, pacientes com NF possuem uma chance maior de contrair infecções graves e até morrer.
+Frequentemente, os pacientes que passam por quimioterapia apresentam uma diminuição na contagem de células sanguíneas. Em especial, a diminuição da contagem dos neutrófilos - glóbulos brancos responsáveis pela defesa contra bactérias e fungos - se denomina neutropenia. Tal quadro aumenta o risco de infecção e febre, podendo gerar o que se conhece como neutropenia febril (NF).
 
+A NF é definida por uma temperatura oral maior do que 38.5°C ou duas medidas consecutivas acima de 38°C por 2 horas, além de uma contagem absoluta de neutrófilos abaixo de 500/uL ou que se espera que caia abaixo desse valor. Mesmo com avanços na prevenção e tratamento, a NF continua sendo uma das complicações mais preocupantes da quimioterapia, sendo uma das principais causas de morbidade, uso de recursos de saúde e de redução de sua eficácia devido a atrasos e reduções de dose na quimioterapia.
 
-<!-- Os pacientes com neoplasias hematológicas (câncer hematológico), em geral, passam por um processo que envolve o diagnóstico da doença, o tratamento com quimioterapia e um acompanhamento de longo prazo. No entanto, a quimioterapia possui algumas complicações, uma vez que ela acaba atacando não apenas o câncer, mas todas as células que se dividem rapidamente.
-
-Em especial, o tecido que mais se prolifera no corpo humano é o tecido hematopoiético, responsável por gerar nossas células sanguíneas. Dessa forma, ao atacar o tecido hematopoiético, a quimioterapia acaba diminuindo a contagem de células do sangue do paciente.
-
-Dentre essas células, o presente projeto está particularmente interessado nos neutrófilos - glóbulos brancos responsáveis pela defesa contra bactérias e fungos. Frequentemente, os pacientes que passam por quimioterapia apresentam uma diminuição na contagem deste tipo de célula, o que se denomina neutropenia. Tal quadro aumenta o risco de infecção e febre, podendo gerar o que se conhece como neutropenia febril (NF). Ainda, pacientes com NF possuem uma chance maior de contrair infecções graves e até morrer. -->
-
-Dessa forma, o objetivo principal desse projeto é criar modelos de prognóstico para predizer a morte de pacientes sintéticos que foram diagnósticados com NF, ou seja, predizer se tais pacientes virão a óbito ou não em decorrência da NF. Define-se, então, a seguinte questão de pesquisa:
+Apesar dos grandes avanços na prevenção e tratamento, a NF continua sendo uma das complicações mais preocupantes da quimioterapia do câncer, sendo uma das principais causas de morbidade, uso de recursos de saúde e eficácia comprometida devido a atrasos e reduções de dose na quimioterapia[^4]. Dessa forma, o objetivo principal desse projeto é criar modelos de prognóstico para tentar predizer a morte de pacientes sintéticos que foram diagnósticados com NF, ou seja, predizer se tais pacientes virão a óbito ou não em decorrência da NF. Define-se, então, a seguinte questão de pesquisa:
 
 <!-- Comentar aqui quais os parâmetros que serão utilizados para a predição? Comentar que é um modelo de classificação pq a ideia é definir se o paciente vai morrer ou não (categórico) em decorrência da NF? -->
 
-- É possível criar um modelo de prognóstico para predizer a morte em decorrência da NF?
+- É possível criar modelos de prognóstico para predizer a morte em decorrência da NF a partir dos dados sintéticos disponibilizados?
+- Quais os resultados obtidos pelos modelos?
+- O modelo que apresentou os melhores resultados é robusto o suficiente para ser aplicado em um conjunto diferente de dados?
 
 ### Ferramentas
 
-- Jupyter Notebooks (linguagem Python) através do Google Colab;
-- Orange 3.31.1.
+- Jupyter Notebooks (linguagem Python) através do Google Colab - utilizado para explorar os dados e extrair as _features_ a serem utilizadas pelo modelo;
+- Orange Workflows (versão 3.31.1) - utilizado para treinar/validar/testar o modelo.
 
 <!-- Listagem das ferramentas utilizadas (na forma de itens). -->
-
-<!-- Jupyter Notebook (python) com o Google Colab e Orange...? O Synthea também entra como ferramenta? -->
 
 ## Metodologia
 
@@ -51,10 +46,36 @@ Dessa forma, o objetivo principal desse projeto é criar modelos de prognóstico
 
 ### Bases Adotadas para o Estudo
 
-- scenario01
-- scenario02
+Como citado anteriormente, este projeto utiliza dados sintéticos gerados através do [Synthea](https://github.com/synthetichealth/synthea). Foram disponibilizados quatro diferentes conjuntos de dados, variando principalmente em relação ao número de pacientes disponíveis. Neste projeto, utilizou-se apenas as bases abaixo por possuírem um menor número de pacientes, facilitando sua exploração e manipulação.
 
-<!-- Falar das tabelas disponíveis e indicar o link da wiki que descreve os dados disponíveis de forma mais detalhada. -->
+- scenario01 - inclui dados de 1174 pacientes;
+- scenario02 - inclui dados de 1121 pacientes.
+
+Para cada uma das bases, 18 arquivos .csv foram disponibilizados. Maiores detalhes sobre as tabelas e os dados contidos em cada uma podem ser encontrados na [Wiki do GitHub do Synthea](https://github.com/synthetichealth/synthea/wiki/CSV-File-Data-Dictionary).
+
+Nem todas as tabelas foram utilizadas neste projeto. Exploramos apenas 9 delas, as quais julgamos possivelmente terem maior relação com a condição de interesse. Foram elas:
+
+- Pacientes (patients.csv) - por conter as informações básicas sobre os pacientes. Informações como idade e sexo, por exemplo, podem ser muito úteis para o modelo de predição;
+- Condições (conditions.csv) - por conter as condições e diagnósticos dos pacientes. Não apenas apresenta a condição de interesse (NF), mas possívelmente outras condições que podem estar relacionadas e impactar na predição de mortalidade;
+- Encontros (encounters.csv) - por conter os encontros pelos quais os pacientes passaram. Neste caso, a ideia foi de que os tipos e frequências dos encontros poderiam trazer informações úteis sobre a saúde dos pacientes.
+- Medicamentos (medications.csv) - a utilização de algum medicamento, especialmente ligado diretamente ao diagnóstico, pode influenciar a mortalidade desses pacientes.
+- Planos de cuidado (careplans.csv)
+- Imunizações (immunizations.csv)
+- Procedimentos (procedures.csv)
+- Observações (observations.csv)
+- Alergias (allergies.csv)
+
+Todas as tabelas utilizadas podem ser encontradas no diretório /data/external, separadas por cenário. A única exceção é a tabela de observações. Devido ao seu tamanho, não foi possível colocá-la diretamente no GitHub. Ao invés disso, disponibilizamos as tabelas de observações já filtradas para conter apenas os dados dos pacientes de interesse em /data/interim/interest/ - tabelas observations01_i.csv e observations02_i.csv.
+
+### Exploração dos Dados e Extração das _Features_
+
+
+
+### Criação dos Modelos
+
+Como pretende-se prever uma resposta binária - a morte ou sobrevivência do paciente em decorrência da NF - o modelo 
+
+
 
 ## Resultados Obtidos
 
@@ -75,3 +96,5 @@ Dessa forma, o objetivo principal desse projeto é criar modelos de prognóstico
 [^2]: KNAUS, William A. et al. The APACHE III prognostic system: risk prediction of hospital mortality for critically III hospitalized adults. Chest, v. 100, n. 6, p. 1619-1636, 1991.
 
 [^3]: LE GALL, Jean-Roger; LEMESHOW, Stanley; SAULNIER, Fabienne. A new simplified acute physiology score (SAPS II) based on a European/North American multicenter study. Jama, v. 270, n. 24, p. 2957-2963, 1993.
+
+[^4] DE NAUROIS, J. et al. Management of febrile neutropenia: ESMO clinical practice guidelines. Annals of Oncology, v. 21, p. v252-v256, 2010.
