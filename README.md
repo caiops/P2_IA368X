@@ -51,17 +51,16 @@ Como citado anteriormente, este projeto utiliza dados sintéticos gerados atrav�
 
 Para cada uma das bases, 18 arquivos .csv foram disponibilizados. Maiores detalhes sobre as tabelas e os dados contidos em cada uma podem ser encontrados na [Wiki do GitHub do Synthea](https://github.com/synthetichealth/synthea/wiki/CSV-File-Data-Dictionary).
 
-Nem todas as tabelas foram utilizadas neste projeto. Exploramos apenas 9 delas, as quais julgamos possivelmente terem maior relação com a condição de interesse. Foram elas:
+Nem todas as tabelas foram utilizadas neste projeto. Exploramos apenas 8 delas, as quais julgamos possivelmente terem maior relação com a condição de interesse. Foram elas:
 
 - Pacientes (patients.csv);
 - Condições (conditions.csv);
 - Encontros (encounters.csv);
 - Medicamentos (medications.csv);
-- Planos de cuidado (careplans.csv);
+- Planos de cuidados (careplans.csv);
 - Imunizações (immunizations.csv);
 - Procedimentos (procedures.csv);
-- Observações (observations.csv);
-- Alergias (allergies.csv).
+- Observações (observations.csv).
 
 Todas as tabelas utilizadas podem ser encontradas no diretório /data/external, separadas por cenário. A única exceção é a tabela de observações. Devido ao seu tamanho, não foi possível colocá-la diretamente no GitHub. Ao invés disso, disponibilizamos as tabelas de observações já filtradas para conter apenas os dados dos pacientes de interesse em /data/interim/interest/ - tabelas observations01_i.csv e observations02_i.csv.
 
@@ -76,6 +75,10 @@ Por fim, começamos a criar as tabelas de _features_ a serem utilizadas para con
 Em seguida, o notebook features_conditions_encounters.ipynb foi utilizado para explorar um pouco mais as tabelas de condições e encontros e possivelmente extrair mais algumas _features_ interessantes. Vale notar que tomamos o cuidado de filtrar as condições e encontros de forma a considerar apenas aqueles que se iniciaram antes ou no início da NF. Afinal, não faria sentido considerar para a predição alguma condição ou encontro que ocorreu após a NF, o que possivelmente enviesaria o modelo criado. Também verificamos se alguns dados que nos pareceram interessantes estavam atrelados ao desfecho dos pacientes. Ainda, em alguns casos, verificamos se a idade dos pacientes parecia ter relação com a potencial _feature_ sob análise, na tentativa de evitar utilizar duas _features_ muito correlacionadas, o que poderia prejudicar a performance do modelo.
 
 Então, exploramos a tabela de medicamentos através do notebook features_medications.ipynb. Novamente, filtramos a data de início da administração dos medicamentos para considerar apenas aqueles que começaram a ser administrados antes ou no início da NF e verificamos se alguns dados que nos pareceram interessantes estavam atrelados ao desfecho dos pacientes. Em especial, buscamos por medicamentos administrados em razão da leucemia mielóide aguda (que, como apresentado nos resultados obtidos, estava atrelada à NF).
+
+Ainda, com o notebook exploring_careplans_immunizations_observations_procedures.ipynb exploramos as tabelas de planos de cuidados, imunizações, procedimentos e observações, na tentativa de obter mais algumas _features_ de interesse. Novamente, filtramos as datas para considerar apenas os dados anteriores ou iguais ao início da NF. No entanto, no caso das observações e dos procedimentos, acabamos notando que utilizar esse limite para as datas acarretava na perda de informações importantes e ele foi descartado - tomando-se os devidos cuidados para evitar possíveis vieses.
+
+O último notebook (features_analyses_final.ipynb) foi utilizado para realizar algumas análises do conjunto final de _features_ selecionadas, bem como para gerar as tabelas finais, prontas para serem utilizadas no Orange. Essas tabelas podem ser encontradas no diretório /data/processed e incluem os dados de cada cenário separadamente (scenario01.csv e scenario02.csv), bem como uma tabela com os dados dos dois cenários em conjunto (all.csv).
 
 ### Criação dos Modelos
 
@@ -107,6 +110,18 @@ Já no segundo caso, acabamos utilizando como _feature_ a contagem de encontros 
 
 #### features_medications.ipynb
 
+Dentre os medicamentos disponíveis, encontramos apenas um relacionado à leucemia mielóide aguda - levofloxacin 500 MG Oral Tablet, utilizado para tratar uma variedade de infecções bacterianas[^5]. Ainda, em todos os casos, esse medicamento foi administrado no dia de início da NF. Dessa forma, adicionamos a administração ou não desse remédio como uma _feature_ a ser considerada.
+
+#### exploring_careplans_immunizations_observations_procedures.ipynb
+
+Ao explorar os planos de cuidados e as imunizações, acabamos tendo dificuldade para relacionar os dados encontrados com a condição de interesse e acabamos não utilizando nenhuma informação dessas tabelas como _features_. Ainda, em relação aos procedimentos realizados, não encontramos dados que nos pareceram interessantes para utilizar como _features_. No entanto, foi possível confirmar que todos os pacientes de interesse realmente passaram pela quimioterapia e que o número de pacientes que morreram no hospital foi igual ao número de pacientes que morreram em decorrência da NF que havíamos obtido nas análises anteriores.
+
+Já em relação à tabela de observações, encontramos duas observações diretamente relacionadas à NF: a contagem de neutrófilos no sangue e a temperatura corporal dos pacientes. Em ambos os casos, cada paciente apresentou a observação apenas uma vez, mesmo desconsiderando a data limite relacionada ao início da NF. Assim, ambos os dados de observações foram adicionados às _features_.
+
+### Análise das _Features_ Selecionadas
+
+Após a exploração dos dados, foram extraídas um total de 10 _features_: raça, etnia e gênero do paciente; idade do paciente na data de início da NF; se apresentou ou não bacteremia; contagem de encontros do tipo _wellness_ e de encontros do tipo ambulatorial relacionados a sintomas até a data de início da NF; se o medicamento levofloxacin 500 MG Oral Tablet foi administrado ou não ao paciente; a contagem de neutrófilos e a temperatura corporal do paciente.
+
 
 
 ### Resultados de Predição
@@ -132,3 +147,5 @@ Já no segundo caso, acabamos utilizando como _feature_ a contagem de encontros 
 [^3]: LE GALL, Jean-Roger; LEMESHOW, Stanley; SAULNIER, Fabienne. A new simplified acute physiology score (SAPS II) based on a European/North American multicenter study. Jama, v. 270, n. 24, p. 2957-2963, 1993.
 
 [^4]: DE NAUROIS, J. et al. Management of febrile neutropenia: ESMO clinical practice guidelines. Annals of Oncology, v. 21, p. v252-v256, 2010.
+
+[^5]: Levofloxacin - Uses, Side Effects, and More. Disponível em <https://www.webmd.com/drugs/2/drug-14495-8235/levofloxacin-oral/levofloxacin-oral/details>. Último acesso em 23/05/2022.
