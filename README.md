@@ -88,11 +88,13 @@ No projeto train_validate_all_features.ows, os dados de cada cenário foram lido
 
 O processo de treinamento e validação foi realizado através do widget _Test and Score_ utilizando a validação cruzada com 5 _folds_. Essa abordagem foi escolhida para permitir uma estimativa da performance dos modelos mesmo considerando o número limitado de dados disponíveis em cada cenário. Além das métricas que o widget normalmente apresenta (área sob a curva ROC, acurácia, F1-score, precisão e sensibilidade) também adicionamos a especificidade. Os parâmetros utilizados pelos classificadores foram refinados de forma empírica, modificando os parâmetros e visualizando o efeito das modificações nessas métricas. Focamos principalmente na área sob a curva ROC (para nos dar uma visão geral de quão bem os modelos estão performando) e nas métricas de sensibilidade e especificidade (para avaliar mais detalhadamente quão bem os modelos estão conseguindo classificar os pacientes que não morreram e que morreram, respectivamente). Ainda, conectamos ao widget _Test and Score_ os widgets _ROC Analysis_ (para visualizar as curvas ROC geradas) e _Confusion Matrix_ (para acessar mais detalhadamente o número de pacientes corretamente classificados em cada uma das classes).
 
-Após analisar alguns possíveis classificadores, definimos aquele que se comportou melhor nos testes realizados como o classificador escolhido para gerar o modelo. Então, investigamos o impacto da retirada de _features_ ou da utilização de combinações de _features_ diferentes através do projeto changing_features.ows.
+Após analisar alguns possíveis classificadores, definimos aquele que se comportou melhor nos testes realizados como o classificador escolhido para gerar o modelo. Então, investigamos o impacto da retirada de _features_ ou da utilização de combinações de _features_ diferentes através do projeto changing_features.ows. O processo de validação realizado foi o mesmo descrito anteriormente, mas com a adição do widget _Select Columns_ para selecionar diferentes _features_ e avaliar os resultado do modelo.
 
-Através dessas análises, definimos qual o conjunto de _features_ final a ser utilizado pelo nosso modelo e passamos para a fase de teste. O modelo/conjunto de _features_ escolhido foi, então, treinado com os dados do cenário 01 e testado nos dados do cenário 02 (e vice-versa). Esse procedimento foi realizado no projeto test_separated.ows.
+Através dessas análises, definimos qual o conjunto de _features_ final a ser utilizado pelo nosso modelo e passamos para a fase de teste. O modelo/conjunto de _features_ escolhido foi, então, treinado com os dados do cenário 01 e testado nos dados do cenário 02 (e vice-versa). Esse procedimento foi realizado no projeto test_separated.ows utilizando o widget _Test and Score_ configurado para realizar a testagem nos dados de teste.
 
-For fim, utilizamos o projeto test_combined.ows para explorar ....... fazer testes com a tabela que junta os dois cenários.
+For fim, utilizamos o projeto test_combined.ows para explorar a utilização dos dois cenários em conjunto, também considerando o modelo/conjunto de _features_ definido anteriormente. Pegamos a tabela que agrupa as _features_ dos dois cenários (all.csv) e utilizamos o widget _Data Sampler_ para separar os dados em dois conjuntos, um com 70% dos dados para ser utilizado no treino/validação e outro com 30% dos dados para ser utilizado como conjunto de teste. Ainda, selecionamos a opção de estratificar a amostra, como forma de tentar imitar a composição do conjunto de dados de entrada nos subconjuntos criados para que ambos os subconjunto sejam representativos dos dados disponíveis.
+
+O subconjunto de treino/validação foi aplicado a um widget _Test and Score_ utilizando a validação cruzada com as mesmas configurações definidas anteriormente. Então, tentamos modificar os parâmetros do modelo para obter melhores resultados. Definida a configuração dos parâmetros do modelo, utilizamos outro widget _Test and Score_, dessa vez configurado para testagem nos dados de teste, passando o conjunto de treino/validação para treinar o modelo e o conjunto de testes para avaliar seu desempenho em dados não utilizados anteiormente.
 
 ## Resultados Obtidos
 
@@ -161,6 +163,42 @@ Quanto à rede neural, observamos que não era necessário utilizar muitas camad
 A regressão logística apresentou resultados um pouco melhores e mais balanceados em termos de sensibilidade/especificidade do que os modelos anteriores. Para tal, foi necessário balancear a distribuição das classes, de modo que as classes recebessem um peso inversamente proporcional à sua frequência. Em ambos os cenários, a regularização L1 se desempenhou melhor.
 
 Por fim, a floresta aleatória obteve um desempenho consistentemente melhor que os outros classificadores em ambos os cenários. Ainda, os resultados foram obtidos utilizando os mesmos valores para os parâmetros: 27 árvores, 6 atributos considerados em cada divisão, distribuição de classes balanceada, profundidade máxima de 3 para as árvores individuais e impedindo a divisão de subconjuntos menores do que 60.
+
+A partir desses resultados, definimos a floresta aleatória como o tipo de classificador a ser utilizado para gerar nosso modelo de predição. Então, exploramos diferentes combinações de _features_ para o treinamento do classificador. No entanto, em ambos os cenários, os resultados obtidos foram piores, independentemente de quais as _features_ ignoradas e mesmo tentando modificar os parâmetros do modelo para se adequar à nova configuração. Ainda, a configuração de parâmetros apresentada anteiormente pareceu, de forma geral, continuar sendo uma boa opção, exceto quando reduzimos muito a quantidade de _features_ utilizadas, cenário no qual foi necessário modificar principalmente o número de atributos considerados em cada divisão. Curiosamente, notamos também que, após mexer um pouco nas _features_ selecionadas, mesmo adicionando todas elas novamente através do _Select Columns_, os resultados do modelo diferiram, tendendo a serem piores do que os obtidos sem o widget de seleção. Isso parece indicar que a ordem na qual as _features_ são passadas para o classificador pode impactar seu desempenho.
+
+Assim, definimos que o modelo utilizado seria treinado com todas as _features_ disponíveis e passamos então para o cenário no qual a floresta aleatória foi treinada com todos os dados de um cenário e testada nos dados do outro cenário. A tabela abaixo mostra os resultados obtidos para as métricas analisadas, tanto no caso do treinamento com o cenário 01 e teste com o cenário 02 quanto no caso oposto.
+
+|             Cenário \ Métricas             |  AUC  | Acurácia | F1-score | Precisão | Sensibilidade | Especificidade |
+|:------------------------------------------:|:-----:|----------|:--------:|:--------:|:-------------:|:--------------:|
+| Treino no cenário 01 e teste no cenário 02 | 0.799 |   0.701  |   0.754  |   0.856  |     0.701     |      0.626     |
+| Treino no cenário 02 e teste no cenário 01 | 0.705 |   0.669  |   0.697  |   0.744  |     0.669     |      0.509     |
+
+As imagens abaixo apresentam as curvas ROC obtidas em cada um dos cenário, bem como as matrizes de confusão.
+
+Treino no cenário 01 e teste no cenário 02:
+
+![Curva ROC obtida treinando no cenário 01 e testando no cenário 02](/assets/ROC_train01_test02.jpg)
+
+![Matriz de confusão obtida treinando no cenário 01 e testando no cenário02](/assets/confusion_train01_test02.jpg)
+
+Treino no cenário 02 e teste no cenário 01:
+
+![Curva ROC obtida treinando no cenário 02 e testando no cenário 01](/assets/ROC_train02_test01.jpg)
+
+![Matriz de confusão obtida treinando no cenário 02 e testando no cenário01](/assets/confusion_train02_test01.jpg)
+
+Finalmente, exploramos a floresta aleatória com os dados combinados dos dois cenários. Os parâmetros selecionados para o modelo foram apenas ligeiramente diferentes daqueles definidos para os testes anteriores: 29 árvores, 5 atributos considerados em cada divisão, distribuição de classes balanceada, profundidade máxima de 4 para as árvores individuais e impedindo a divisão de subconjuntos menores do que 60. Definida essa configuração a partir do conjunto de treino/validação, aplicamos o modelo ao conjunto de teste. A tabela abaixo mostra os resultados obtidos para as métricas analisadas, tanto no treino/validação quanto no teste.
+
+| Cenário \ Métricas |  AUC  | Acurácia | F1-score | Precisão | Sensibilidade | Especificidade |
+|:------------------:|:-----:|----------|:--------:|:--------:|:-------------:|:--------------:|
+|  Treino/validação  | 0.779 |   0.706  |   0.744  |   0.829  |     0.706     |      0.674     |
+|        Teste       | 0.792 |   0.724  |   0.757  |   0.827  |     0.724     |      0.677     |
+
+As imagens abaixo apresentam a curva ROC obtida no processo de teste, bem como a matriz de confusão correspondente.
+
+![Curva ROC obtida no teste com os dois cenários combinados](/assets/ROC_test_combined.jpg)
+
+![Matriz de confusão obtida no teste com os dois cenários combinados](/assets/confusion_test_combined.jpg)
 
 ## Discussão
 
