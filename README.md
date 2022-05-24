@@ -53,15 +53,15 @@ Para cada uma das bases, 18 arquivos .csv foram disponibilizados. Maiores detalh
 
 Nem todas as tabelas foram utilizadas neste projeto. Exploramos apenas 9 delas, as quais julgamos possivelmente terem maior relação com a condição de interesse. Foram elas:
 
-- Pacientes (patients.csv) - por conter as informações básicas sobre os pacientes. Informações como idade e sexo, por exemplo, podem ser muito úteis para o modelo de predição;
-- Condições (conditions.csv) - por conter as condições e diagnósticos dos pacientes. Não apenas apresenta a condição de interesse (NF), mas possívelmente outras condições que podem estar relacionadas e impactar na predição de mortalidade;
-- Encontros (encounters.csv) - por conter os encontros pelos quais os pacientes passaram. Neste caso, a ideia foi de que os tipos e frequências dos encontros poderiam trazer informações úteis sobre a saúde dos pacientes.
-- Medicamentos (medications.csv) - a utilização de algum medicamento, especialmente ligado diretamente ao diagnóstico, pode influenciar a mortalidade desses pacientes.
-- Planos de cuidado (careplans.csv)
-- Imunizações (immunizations.csv)
-- Procedimentos (procedures.csv)
-- Observações (observations.csv)
-- Alergias (allergies.csv)
+- Pacientes (patients.csv);
+- Condições (conditions.csv);
+- Encontros (encounters.csv);
+- Medicamentos (medications.csv);
+- Planos de cuidado (careplans.csv);
+- Imunizações (immunizations.csv);
+- Procedimentos (procedures.csv);
+- Observações (observations.csv);
+- Alergias (allergies.csv).
 
 Todas as tabelas utilizadas podem ser encontradas no diretório /data/external, separadas por cenário. A única exceção é a tabela de observações. Devido ao seu tamanho, não foi possível colocá-la diretamente no GitHub. Ao invés disso, disponibilizamos as tabelas de observações já filtradas para conter apenas os dados dos pacientes de interesse em /data/interim/interest/ - tabelas observations01_i.csv e observations02_i.csv.
 
@@ -73,7 +73,9 @@ O primeiro notebook (definition_and_basic_features.ipynb) foi utilizado para uma
 
 Por fim, começamos a criar as tabelas de _features_ a serem utilizadas para construção do modelo. Nesta etapa, extraímos apenas dados básicos sobre os pacientes (através da tabela patients.csv), o desfecho se o paciente havia morrido ou não em decorrência da NF (a informação que o modelo deve prever) e a idade do paciente na data de início da NF (obtida ao relacionar sua data de nascimento e a data de início da NF e convertida em anos ao considerar um ano como 365 dias).
 
-Em seguida, o notebook 
+Em seguida, o notebook features_conditions_encounters.ipynb foi utilizado para explorar um pouco mais as tabelas de condições e encontros e possivelmente extrair mais algumas _features_ interessantes. Vale notar que tomamos o cuidado de filtrar as condições e encontros de forma a considerar apenas aqueles que se iniciaram antes ou no início da NF. Afinal, não faria sentido considerar para a predição alguma condição ou encontro que ocorreu após a NF, o que possivelmente enviesaria o modelo criado. Também verificamos se alguns dados que nos pareceram interessantes estavam atrelados ao desfecho dos pacientes. Ainda, em alguns casos, verificamos se a idade dos pacientes parecia ter relação com a potencial _feature_ sob análise, na tentativa de evitar utilizar duas _features_ muito correlacionadas, o que poderia prejudicar a performance do modelo.
+
+Então, exploramos a tabela de medicamentos através do notebook features_medications.ipynb. Novamente, filtramos a data de início da administração dos medicamentos para considerar apenas aqueles que começaram a ser administrados antes ou no início da NF e verificamos se alguns dados que nos pareceram interessantes estavam atrelados ao desfecho dos pacientes. Em especial, buscamos por medicamentos administrados em razão da leucemia mielóide aguda (que, como apresentado nos resultados obtidos, estava atrelada à NF).
 
 ### Criação dos Modelos
 
@@ -85,7 +87,7 @@ Como pretende-se prever uma resposta binária - a morte ou sobrevivência do pac
 
 ### Exploração dos Dados e Extração das _Features_
 
-#### Definition_and_basic_features.ipynb
+#### definition_and_basic_features.ipynb
 
 A partir dos processamentos realizados, obtivemos 139 pacientes com NF no cenário 01 e 117 no cenário 02. Cada paciente apresentou a condição apenas uma vez. Destes, 31 pacientes haviam morrido no cenário 01 e 21 no cenário 02. No entanto, apenas 26 e 13 pacientes, respectivamente, morreram em decorrência da NF e todos eles morreram no mesmo dia em que a NF começou (com exceção de um paciente do cenário 01 que morreu no dia seguinte ao início da NF). Ainda, para os pacientes que morreram, mas não em decorrência da NF, a condição se encerrou no mesmo dia em que se iniciou e eles vieram a óbito no mínimo 202 dias após a NF.
 
@@ -93,7 +95,17 @@ Todos esses pacientes também apresentaram o diagnóstico de leucemia mielóide 
 
 Dentre os dados básicos disponíveis sobre os pacientes, optamos por utilizar como _features_ apenas sua raça, etnia e gênero. Estes fatores podem ser importantes por questões socio-econômicas - como diferentes níveis de acesso a serviços de saúde - ou até mesmo por questões genéticas - como algum tipo de predisposição ao desenvolvimento da NF. Ainda, descartamos a possibilidade de utilizar dados relacionados ao endereço dos pacientes, uma vez que todos os pacientes de cada cenário residem em um mesmo estado, mas que difere entre os cenários (Massachusetts no 01 e Alaska no 02). Um modelo treinado utilizando dados desse tipo como _features_ poderia acabar se tornando muito específico para os pacientes de regiões específicas, dificultando sua generalização para pacientes de outras regiões.
 
-A idade do paciente no início da NF também foi utilizada como _feture_, uma vez que esse fator pode influenciar suas chances de sobrevivência. Por exemplo, pacientes idosos apresentam maior risco de neutropenia febril após quimioterapia, com piores taxas de morbidade e mortalidade[^4]. Em ambos os cenários, as idades dos pacientes variaram de 0 a 21 anos. Vale notar que consideramos utilizar também a idade dos pacientes no momento do diagnóstico de leucemia mielóide aguda. No entanto, todos os pacientes receberam esse diagnóstico no mesmo dia da NF ou apenas um dia antes.
+A idade do paciente no início da NF também foi utilizada como _feature_, uma vez que esse fator pode influenciar suas chances de sobrevivência. Por exemplo, pacientes idosos apresentam maior risco de neutropenia febril após quimioterapia, com piores taxas de morbidade e mortalidade[^4]. Em ambos os cenários, as idades dos pacientes variaram de 0 a 21 anos. Vale notar que consideramos utilizar também a idade dos pacientes no momento do diagnóstico de leucemia mielóide aguda. No entanto, todos os pacientes receberam esse diagnóstico no mesmo dia da NF ou apenas um dia antes.
+
+#### features_conditions_encounters.ipynb
+
+Dentre as condições analisadas, a bacteremia - presença de bactéria no sangue - chamou nossa atenção por aparecer um número razoável de vezes e em proporção maior nos pacientes que morreram em decorrência da NF. De fato, o prognóstico da NF tende a ser pior em pacientes com bacteremia[^4]. Observamos ainda que cada paciente apresentou essa condição apenas uma vez e exatamente no dia de início da NF. Dessa forma, adicionamos a presença ou não de bacteremia como uma _feature_ a ser utilizada para criar o modelo de predição.
+
+Quanto aos encontros, nos chamaram a atenção os do tipo _wellness_ e os ambulatoriais. No primeiro caso, imaginamos que, possivelmente, pacientes que passaram por mais visitas de rotina na infância teriam uma menor probabilidade de morrer em decorrência da NF, já que eles foram mais bem acompanhados. No entanto, encontramos o oposto, com uma maior proporção de mortos entre aqueles que passaram por mais encontros do tipo _wellness_. Ainda assim, a contagem de encontros deste tipo para cada paciente foi adotada como _feature_ para o modelo.
+
+Já no segundo caso, acabamos utilizando como _feature_ a contagem de encontros ambulatóriais relacionados a sintomas. Não apenas os encontros relacionados a sintomas foram os mais comuns, como eles nos pareceram ter mais relação com a NF. Encontros ambulatoriais não atrelados a sintomas incluiam encontros por fraturas e queimaduras, por exemplo, enquanto os atrelados a sintomas incluiam principalmente sinusite viral, faringite viral aguda, bronquite aguda, entre outros. Nossa ideia foi de que pacientes que passaram por mais encontros deste tipo possivelmente possuíam um sistema imunológico mais debilitado - levando a presença dessas condições com maior frequência e possivelmente tendo algum impacto no caso da NF.
+
+#### features_medications.ipynb
 
 
 
@@ -119,4 +131,4 @@ A idade do paciente no início da NF também foi utilizada como _feture_, uma ve
 
 [^3]: LE GALL, Jean-Roger; LEMESHOW, Stanley; SAULNIER, Fabienne. A new simplified acute physiology score (SAPS II) based on a European/North American multicenter study. Jama, v. 270, n. 24, p. 2957-2963, 1993.
 
-[^4] DE NAUROIS, J. et al. Management of febrile neutropenia: ESMO clinical practice guidelines. Annals of Oncology, v. 21, p. v252-v256, 2010.
+[^4]: DE NAUROIS, J. et al. Management of febrile neutropenia: ESMO clinical practice guidelines. Annals of Oncology, v. 21, p. v252-v256, 2010.
