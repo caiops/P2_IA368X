@@ -154,6 +154,12 @@ Cenário 02:
 
 ![Curvas ROC obtidas no cenário 02 usando todas as features](/assets/ROC_all_features_02.jpg)
 
+É importante notar que, como comentado na metodologia, no nosso caso, a sensibilidade (ou _recall_) corresponde ao percentual de pacientes classificados como "não morreu" (ou zero para NF_DEATH) dentre aqueles que efetivamente não morreram, enquanto a especificidade corresponde ao percentual de pacientes classificados como "morreu" (ou um para FN_DEATH) dentre aqueles que efetivamente morreram. Para confirmar essa afirmação, observe a matriz de confusão obtida para a árvore de decisão no cenário 01, apresentada abaixo.
+
+![Matriz de confusão obtida para a árvore de decisão no cenário 01](/assets/confusion_tree_all_features_01.jpg)
+
+
+
 Para a árvore de decisão, em ambos os cenários, o parâmetro que apresentou maior influência foi o número mínimo de instâncias nas folhas. Os melhores resultados obtidos consideraram como 5 o número mínimo para o cenário 01 e 6 para o cenário 02. É possível que um número menor de instâncias nas folhas acabe gerando um modelo muito específico para os dados de treinamento e que não consegue generalizar para os dados de validação, enquanto um número maior atrapalhe o modelo a separar adequadamente as classes. Ainda assim, os resultados para esse classificador não foram muito bons em nenhum dos dois cenários, principalmente em relação à especificidade.
 
 O SVM conseguiu apresentar resultados um pouco melhores do que a árvore de decisão no cenário 01, em especial utilizando o kernel polinomial e com parâmetro de custo definido em 3 - ou seja, foi necessário penalizar um pouco mais o modelo para amostras classificadas erroneamente. No entanto, ele acabou performando pior no cenário 02, mesmo testando com diferentes kernels e valores de parâmetros. Especialmente no segundo cenário, notamos que os resultados desse classificador variavam bastante, mesmo que ele fosse computado novamente sem a modificação de nenhum de seus parâmetros.
@@ -202,7 +208,19 @@ As imagens abaixo apresentam a curva ROC obtida no processo de teste, bem como a
 
 ## Discussão
 
+Questão do número de features, que acabamos optando por selecionar apenas aquelas mais diretamente relacionadas com a condição de interesse, mas que dada a complexidade da proposta de predição elas podem não ser suficientes (vide o fato de que não obtivemos melhores resultados usando menos features...).
 
+Além disso tem o número limitado de pacientes, especialmente de pacientes que morreram em decorrência da NF (correlacionar isso com o fato dos modelos que apresentaram melhores resultados serem os que tinham a posição de balancear as classes e tal).
+
+Os resultados obtidos foram razoáveis em relação à área sob a curva, com valores acima de 0.7 e muitas vezes próximos de 0.8. No entanto, os resultados não foram tão bons assim ao analisar a sensibilidade e a especificidade, especialmente para o último...
+
+Foi possível observar que, de maneira geral, os resultados foram melhores para o primeiro cenário e piores para o segundo. Da mesma forma, os resultados foram melhores ao treinar com o cenário 01 e testar no cenário 02 (o segundo cenário tem menos pacientes, especialmente pacientes que morreram, o que talvez justifique o pior desempenho e tal)
+
+Ainda, quando utilizamos os dois cenários em conjunto acabamos obtendo resultados para o teste melhores até do que treinando e testando em cenários diferentes (aqui temos tanto a questão de uma amostra mais balanceada, já que os dois cenários apresentam características bem diferentes, além da questão do conjunto de testes ser um pouco menor do que quando considerando os dois cenários separadamente).
+
+Pq a floresta aleatória se desempenhou melhor que os outros modelos?
+
+Comentar também sobre as limitações do próprio conjunto de dados sintéticos que acabou limitando, em alguns casos, o tipo de features usadas (por exemplo o fato de todos os pacientes terem morrido no mesmo dia que diagnosticou a NF ou terem se curado no mesmo dia, de serem todos até no máximo 21 anos, do diagnóstico de câncer ter sido no mesmo dia que o da NF.....)
 
 ## Conclusão
 
