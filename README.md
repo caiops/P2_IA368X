@@ -82,13 +82,17 @@ O último notebook (features_analyses_final.ipynb) foi utilizado para realizar a
 
 ### Criação dos Modelos
 
-Como pretende-se prever uma resposta binária - a morte ou sobrevivência do paciente em decorrência da NF - o modelo de predição a ser utilizado consiste em um modelo de classificação.
+Como pretende-se prever uma resposta binária - a morte ou sobrevivência do paciente em decorrência da NF - o modelo de predição a ser utilizado consiste em um modelo de classificação. Todo o processo de treinamento/validação/teste dos modelos foi realizado com a ferramenta Orange e os projetos gerados podem ser encontrados no diretório /src.
 
-!!!
+No projeto train_validate_all_features.ows, os dados de cada cenário foram lidos e utilizamos os widgets _Feature Statistics_, _Distributions_, _Box Plot_ e _Scatter Plot_ para explorar e visualizar os dados, com o objetivo de encontrar possíveis padrões e compreender melhor as relações entre os dados. Então, os dados foram utilizados para treinar e validar alguns classificadores: árvore de decisão, floresta aleatória, SVM, regressão logística e rede neural. Tais classificadores foram escolhidos por serem alguns dos mais conhecidos e amplamente utilizados.
 
-A ideia: testar vários classificadores diferentes nos dois cenários, treinando/validando só naquele cenário e utilizando todas as features disponíveis; daí pegar o modelo (ou os modelos talvez) que se saiu melhor e fazer outro teste semelhante, mas agora mexendo nas features disponíveis; a partir daí, selecionar o modelo que performou melhor em cada cenário e aplicar pra teste com o outro cenário; por fim, fazer testes com a tabela que junta os dois cenários.
+O processo de treinamento e validação foi realizado através do widget _Test and Score_ utilizando a validação cruzada com 5 _folds_. Essa abordagem foi escolhida para permitir uma estimativa da performance dos modelos mesmo considerando o número limitado de dados disponíveis em cada cenário. Além das métricas que o widget normalmente apresenta (área sob a curva ROC, acurácia, F1-score, precisão e sensibilidade) também adicionamos a especificidade. Os parâmetros utilizados pelos classificadores foram refinados de forma empírica, modificando os parâmetros e visualizando o efeito das modificações nessas métricas. Focamos principalmente na área sob a curva ROC (para nos dar uma visão geral de quão bem os modelos estão performando) e nas métricas de sensibilidade e especificidade (para avaliar mais detalhadamente quão bem os modelos estão conseguindo classificar os pacientes que não morreram e que morreram, respectivamente). Ainda, conectamos ao widget _Test and Score_ os widgets _ROC Analysis_ (para visualizar as curvas ROC geradas) e _Confusion Matrix_ (para acessar mais detalhadamente o número de pacientes corretamente classificados em cada uma das classes).
 
-!!!
+Após analisar alguns possíveis classificadores, definimos aquele que se comportou melhor nos testes realizados como o classificador escolhido para gerar o modelo. Então, investigamos o impacto da retirada de _features_ ou da utilização de combinações de _features_ diferentes através do projeto changing_features.ows.
+
+Através dessas análises, definimos qual o conjunto de _features_ final a ser utilizado pelo nosso modelo e passamos para a fase de teste. O modelo/conjunto de _features_ escolhido foi, então, treinado com os dados do cenário 01 e testado nos dados do cenário 02 (e vice-versa). Esse procedimento foi realizado no projeto test_separated.ows.
+
+For fim, utilizamos o projeto test_combined.ows para explorar ....... fazer testes com a tabela que junta os dois cenários.
 
 ## Resultados Obtidos
 
@@ -98,7 +102,7 @@ A ideia: testar vários classificadores diferentes nos dois cenários, treinando
 
 A partir dos processamentos realizados, obtivemos 139 pacientes com NF no cenário 01 e 117 no cenário 02. Cada paciente apresentou a condição apenas uma vez. Destes, 31 pacientes haviam morrido no cenário 01 e 21 no cenário 02. No entanto, apenas 26 e 13 pacientes (cerca de 18.7% e 11.1%), respectivamente, morreram em decorrência da NF e todos eles morreram no mesmo dia em que a NF começou (com exceção de um paciente do cenário 01 que morreu no dia seguinte ao início da NF). Ainda, para os pacientes que morreram, mas não em decorrência da NF, a condição se encerrou no mesmo dia em que se iniciou e eles vieram a óbito no mínimo 202 dias após a NF.
 
-Todos esses pacientes também apresentaram o diagnóstico de leucemia mielóide aguda (acute myeloid leukemia disease). Novamente, a única exceção se deu para um paciente do cenário 01, que não apresentou dados para essa condição nem para algum outro tipo de câncer. (ATRELAR COM A QUESTÃO DOS PROCEDIMENTOS DEPOIS, QUE CONFIRMOU QUE ERA UM ERRO).
+Todos esses pacientes também apresentaram o diagnóstico de leucemia mielóide aguda (acute myeloid leukemia disease). Novamente, a única exceção se deu para um paciente do cenário 01, que não apresentou dados para essa condição nem para algum outro tipo de câncer.
 
 Dentre os dados básicos disponíveis sobre os pacientes, optamos por utilizar como _features_ apenas sua raça, etnia e gênero. Estes fatores podem ser importantes por questões socio-econômicas - como diferentes níveis de acesso a serviços de saúde - ou até mesmo por questões genéticas - como algum tipo de predisposição ao desenvolvimento da NF. Ainda, descartamos a possibilidade de utilizar dados relacionados ao endereço dos pacientes, uma vez que todos os pacientes de cada cenário residem em um mesmo estado, mas que difere entre os cenários (Massachusetts no 01 e Alaska no 02). Um modelo treinado utilizando dados desse tipo como _features_ poderia acabar se tornando muito específico para os pacientes de regiões específicas, dificultando sua generalização para pacientes de outras regiões.
 
@@ -134,7 +138,29 @@ Quanto à etnia dos pacientes, temos apenas pacientes hispânicos ou não hispâ
 
 ### Resultados de Predição
 
-## Evolução do Projeto
+Os resultados obtidos pelos diferentes classificadores no processo de treino e validação considerando todas as _features_, após ajustar os parâmetros dos modelos, podem ser visualizados nas imagens abaixo. Para cada cenário, a primeira imagem apresenta os valores obtidos para as métricas de avaliação dos modelos e a segunda imagem apresenta as curvas ROC.
+
+Cenário 01:
+
+![Resultados obtidos no cenário 01 usando todas as features](/assets/validation_all_features_01.jpg)
+
+![Curvas ROC obtidas no cenário 01 usando todas as features](/assets/ROC_all_features_01.jpg)
+
+Cenário 02:
+
+![Resultados obtidos no cenário 02 usando todas as features](/assets/validation_all_features_02.jpg)
+
+![Curvas ROC obtidas no cenário 02 usando todas as features](/assets/ROC_all_features_02.jpg)
+
+Para a árvore de decisão, em ambos os cenários, o parâmetro que apresentou maior influência foi o número mínimo de instâncias nas folhas. Os melhores resultados obtidos consideraram como 5 o número mínimo para o cenário 01 e 6 para o cenário 02. É possível que um número menor de instâncias nas folhas acabe gerando um modelo muito específico para os dados de treinamento e que não consegue generalizar para os dados de validação, enquanto um número maior atrapalhe o modelo a separar adequadamente as classes. Ainda assim, os resultados para esse classificador não foram muito bons em nenhum dos dois cenários, principalmente em relação à especificidade.
+
+O SVM conseguiu apresentar resultados um pouco melhores do que a árvore de decisão no cenário 01, em especial utilizando o kernel polinomial e com parâmetro de custo definido em 3 - ou seja, foi necessário penalizar um pouco mais o modelo para amostras classificadas erroneamente. No entanto, ele acabou performando pior no cenário 02, mesmo testando com diferentes kernels e valores de parâmetros. Especialmente no segundo cenário, notamos que os resultados desse classificador variavam bastante, mesmo que ele fosse computado novamente sem a modificação de nenhum de seus parâmetros.
+
+Quanto à rede neural, observamos que não era necessário utilizar muitas camadas escondidas nem muitos neurônios nessas camadas e acabamos obtendo alguns dos melhores resultados considerando apenas duas camadas escondidas com 20 neurônios em cada. Para o cenário 01, obtivemos resultados melhores utilizando a função de ativação logística, enquanto no cenário 02 a função de ativação ReLu se desempenhou melhor. Em ambos os casos, o otimizador L-BFGS-B, apesar de um pouco mais lento, gerou os melhores resultados, principalmente em relação à especificidade do modelo. Assim como no caso do SVM, a rede neural também se saiu melhor no cenário 01.
+
+A regressão logística apresentou resultados um pouco melhores e mais balanceados em termos de sensibilidade/especificidade do que os modelos anteriores. Para tal, foi necessário balancear a distribuição das classes, de modo que as classes recebessem um peso inversamente proporcional à sua frequência. Em ambos os cenários, a regularização L1 se desempenhou melhor.
+
+Por fim, a floresta aleatória obteve um desempenho consistentemente melhor que os outros classificadores em ambos os cenários. Ainda, os resultados foram obtidos utilizando os mesmos valores para os parâmetros: 27 árvores, 6 atributos considerados em cada divisão, distribuição de classes balanceada, profundidade máxima de 3 para as árvores individuais e impedindo a divisão de subconjuntos menores do que 60.
 
 ## Discussão
 
