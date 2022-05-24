@@ -38,8 +38,6 @@ Apesar dos grandes avanços na prevenção e tratamento, a NF continua sendo uma
 - Jupyter Notebooks (linguagem Python) através do Google Colab - utilizado para explorar os dados e extrair as _features_ a serem utilizadas pelo modelo;
 - Orange Workflows (versão 3.31.1) - utilizado para treinar/validar/testar o modelo.
 
-<!-- Listagem das ferramentas utilizadas (na forma de itens). -->
-
 ## Metodologia
 
 <!-- Abordagem adotada pelo projeto na predição. Justificar as escolhas e (opcionalmente) apresentar fundamentos teóricos. -->
@@ -69,7 +67,13 @@ Todas as tabelas utilizadas podem ser encontradas no diretório /data/external, 
 
 ### Exploração dos Dados e Extração das _Features_
 
+A exploração dos dados e extração das _features_ foi realizada por meio dos notebooks que podem ser encontrados no diretório /notebooks. Optamos por dividir os processamentos realizados em alguns notebooks, de modo a facilitar sua manipulação e entendimento. Eles foram criados e executados na ordem em que serão apresentados a seguir. Para permitir sua execução de forma independente, algumas tabelas de dados processados foram salvas no diretório /data/interim/interest, enquanto as tabelas de _features_ geradas por cada notebook foram salvas no diretório /data/interim/features. Dessa forma, os notebooks que se utilizam de processamentos anteriores podem ser executados diretamente utilizando esses dados intermediários, sem a necessidade de que todos os processamentos sejam refeitos em cada notebook. Ainda, todos eles foram criados e configurados de modo a permitir sua execução por qualquer pessoa através do Google Colab.
 
+O primeiro notebook (definition_and_basic_features.ipynb) foi utilizado para uma exploração inicial dos dados e geração das primeiras _features_. As tabelas de condições e encontros foram analisadas para verificar quais as possibilidades disponíveis e definir qual seria a proposta do projeto. Após definir que iríamos trabalhar com a NF, passamos a explorar os dados relacionados a essa condição. Em especial, buscamos o diagóstico de algum tipo de câncer, uma vez que a NF é atrelada ao tratamento quimioterápico para câncer.
+
+Por fim, começamos a criar as tabelas de _features_ a serem utilizadas para construção do modelo. Nesta etapa, extraímos apenas dados básicos sobre os pacientes (através da tabela patients.csv), o desfecho se o paciente havia morrido ou não em decorrência da NF (a informação que o modelo deve prever) e a idade do paciente na data de início da NF (obtida ao relacionar sua data de nascimento e a data de início da NF e convertida em anos ao considerar um ano como 365 dias).
+
+Em seguida, o notebook 
 
 ### Criação dos Modelos
 
@@ -79,9 +83,27 @@ Como pretende-se prever uma resposta binária - a morte ou sobrevivência do pac
 
 ## Resultados Obtidos
 
+### Exploração dos Dados e Extração das _Features_
+
+#### Definition_and_basic_features.ipynb
+
+A partir dos processamentos realizados, obtivemos 139 pacientes com NF no cenário 01 e 117 no cenário 02. Cada paciente apresentou a condição apenas uma vez. Destes, 31 pacientes haviam morrido no cenário 01 e 21 no cenário 02. No entanto, apenas 26 e 13 pacientes, respectivamente, morreram em decorrência da NF e todos eles morreram no mesmo dia em que a NF começou (com exceção de um paciente do cenário 01 que morreu no dia seguinte ao início da NF). Ainda, para os pacientes que morreram, mas não em decorrência da NF, a condição se encerrou no mesmo dia em que se iniciou e eles vieram a óbito no mínimo 202 dias após a NF.
+
+Todos esses pacientes também apresentaram o diagnóstico de leucemia mielóide aguda (acute myeloid leukemia disease). Novamente, a única exceção se deu para um paciente do cenário 01, que não apresentou dados para essa condição nem para algum outro tipo de câncer. (ATRELAR COM A QUESTÃO DOS PROCEDIMENTOS DEPOIS, QUE CONFIRMOU QUE ERA UM ERRO).
+
+Dentre os dados básicos disponíveis sobre os pacientes, optamos por utilizar como _features_ apenas sua raça, etnia e gênero. Estes fatores podem ser importantes por questões socio-econômicas - como diferentes níveis de acesso a serviços de saúde - ou até mesmo por questões genéticas - como algum tipo de predisposição ao desenvolvimento da NF. Ainda, descartamos a possibilidade de utilizar dados relacionados ao endereço dos pacientes, uma vez que todos os pacientes de cada cenário residem em um mesmo estado, mas que difere entre os cenários (Massachusetts no 01 e Alaska no 02). Um modelo treinado utilizando dados desse tipo como _features_ poderia acabar se tornando muito específico para os pacientes de regiões específicas, dificultando sua generalização para pacientes de outras regiões.
+
+A idade do paciente no início da NF também foi utilizada como _feture_, uma vez que esse fator pode influenciar suas chances de sobrevivência. Por exemplo, pacientes idosos apresentam maior risco de neutropenia febril após quimioterapia, com piores taxas de morbidade e mortalidade[^4]. Em ambos os cenários, as idades dos pacientes variaram de 0 a 21 anos. Vale notar que consideramos utilizar também a idade dos pacientes no momento do diagnóstico de leucemia mielóide aguda. No entanto, todos os pacientes receberam esse diagnóstico no mesmo dia da NF ou apenas um dia antes.
+
+
+
+### Resultados de Predição
+
 ## Evolução do Projeto
 
 ## Discussão
+
+
 
 ## Conclusão
 
