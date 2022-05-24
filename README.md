@@ -82,9 +82,13 @@ O último notebook (features_analyses_final.ipynb) foi utilizado para realizar a
 
 ### Criação dos Modelos
 
-Como pretende-se prever uma resposta binária - a morte ou sobrevivência do paciente em decorrência da NF - o modelo 
+Como pretende-se prever uma resposta binária - a morte ou sobrevivência do paciente em decorrência da NF - o modelo de predição a ser utilizado consiste em um modelo de classificação.
 
+!!!
 
+A ideia: testar vários classificadores diferentes nos dois cenários, treinando/validando só naquele cenário e utilizando todas as features disponíveis; daí pegar o modelo (ou os modelos talvez) que se saiu melhor e fazer outro teste semelhante, mas agora mexendo nas features disponíveis; a partir daí, selecionar o modelo que performou melhor em cada cenário e aplicar pra teste com o outro cenário; por fim, fazer testes com a tabela que junta os dois cenários.
+
+!!!
 
 ## Resultados Obtidos
 
@@ -92,7 +96,7 @@ Como pretende-se prever uma resposta binária - a morte ou sobrevivência do pac
 
 #### definition_and_basic_features.ipynb
 
-A partir dos processamentos realizados, obtivemos 139 pacientes com NF no cenário 01 e 117 no cenário 02. Cada paciente apresentou a condição apenas uma vez. Destes, 31 pacientes haviam morrido no cenário 01 e 21 no cenário 02. No entanto, apenas 26 e 13 pacientes, respectivamente, morreram em decorrência da NF e todos eles morreram no mesmo dia em que a NF começou (com exceção de um paciente do cenário 01 que morreu no dia seguinte ao início da NF). Ainda, para os pacientes que morreram, mas não em decorrência da NF, a condição se encerrou no mesmo dia em que se iniciou e eles vieram a óbito no mínimo 202 dias após a NF.
+A partir dos processamentos realizados, obtivemos 139 pacientes com NF no cenário 01 e 117 no cenário 02. Cada paciente apresentou a condição apenas uma vez. Destes, 31 pacientes haviam morrido no cenário 01 e 21 no cenário 02. No entanto, apenas 26 e 13 pacientes (cerca de 18.7% e 11.1%), respectivamente, morreram em decorrência da NF e todos eles morreram no mesmo dia em que a NF começou (com exceção de um paciente do cenário 01 que morreu no dia seguinte ao início da NF). Ainda, para os pacientes que morreram, mas não em decorrência da NF, a condição se encerrou no mesmo dia em que se iniciou e eles vieram a óbito no mínimo 202 dias após a NF.
 
 Todos esses pacientes também apresentaram o diagnóstico de leucemia mielóide aguda (acute myeloid leukemia disease). Novamente, a única exceção se deu para um paciente do cenário 01, que não apresentou dados para essa condição nem para algum outro tipo de câncer. (ATRELAR COM A QUESTÃO DOS PROCEDIMENTOS DEPOIS, QUE CONFIRMOU QUE ERA UM ERRO).
 
@@ -118,9 +122,13 @@ Ao explorar os planos de cuidados e as imunizações, acabamos tendo dificuldade
 
 Já em relação à tabela de observações, encontramos duas observações diretamente relacionadas à NF: a contagem de neutrófilos no sangue e a temperatura corporal dos pacientes. Em ambos os casos, cada paciente apresentou a observação apenas uma vez, mesmo desconsiderando a data limite relacionada ao início da NF. Assim, ambos os dados de observações foram adicionados às _features_.
 
-### Análise das _Features_ Selecionadas
+### Análise das _Features_ Extraídas
 
 Após a exploração dos dados, foram extraídas um total de 10 _features_: raça, etnia e gênero do paciente; idade do paciente na data de início da NF; se apresentou ou não bacteremia; contagem de encontros do tipo _wellness_ e de encontros do tipo ambulatorial relacionados a sintomas até a data de início da NF; se o medicamento levofloxacin 500 MG Oral Tablet foi administrado ou não ao paciente; a contagem de neutrófilos e a temperatura corporal do paciente.
+
+No cenário 01, o gênero dos pacientes estava quase completamente balanceado (70 homens e 69 mulheres ou 50.4% e 49.6%, respectivamente). Já no cenário 02, encontramos um pequeno desbalanceamento, com mais mulheres do que homens (66 mulheres e 51 homens ou 56.4% e 43.6%, respectivamente). Ainda, 17.4% das mulheres e 20% dos homens morreram em decorrência da NF no cenário 01, enquanto no cenário 02 foram 10.6% das mulheres e 11.8% dos homens. Assim, apesar dos valores serem bem próximos, parece haver uma pequena tendência para que os homens tenham mais chance de morrer em decorrência da NF.
+
+Quanto à etnia dos pacientes, temos apenas pacientes hispânicos ou não hispânicos, sendo a grande maioria de não hispânicos (124 ou 89.2% no cenário 01 e 115 ou 98.3% no cenário 02). Enquanto no cenário 02 todos os pacientes que morreram foram não hispânicos, no cenário 01 53.3% dos hispânicos morreram contra 14.5% dos não hispânicos.
 
 
 
