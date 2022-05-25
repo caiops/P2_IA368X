@@ -220,7 +220,7 @@ Uma amostra pequena pode dificultar a construção de um bom modelo de prediçã
 
 Ainda, a desproporcionalidade entre as classes de interesse pode afetar bastante o desempenho dos classificadores. Com um número muito maior de pacientes que sobreviveram, os classificadores podem tender a se especializar ou ter mais facilidade para encontrar padrões que identifiquem esses pacientes. De fato, esse parece ter sido o cenário observado ao testar diferentes classificadores, de forma que apenas aqueles que possuíam a opção de balancear a distribuição das classes (regressão logística e floresta aleatória) obtiveram resultados melhores de especificidade.
 
-O modelo que se desempenhou melhor nos testes realizados foi a floresta aleatória... (tem a questão do balanço das classes e acrescentar mais coisas).
+O modelo que se desempenhou melhor nos testes realizados foi a floresta aleatória. Algumas de suas características que podem justificar essa vantagem são o fato desse classificador conseguir lidar bem tanto com recursos binários quanto com outros tipos como os categóricos e numéricos, exigindo pouco pré-processamento nos conjuntos de dados[^6]. Outra característica importante é sua capacidade de lidar com classes não balanceadas - e a disponibilidade desse recurso no Orange. Além disso, por criar diversas árvores e combinar os resultados de todas elas, esse algoritmo tende a ser um pouco mais robusto ao _overfitting_[^7], desde que seus parâmetros estejam bem configurados e seja utilizado um número suficiente de árvores, por exemplo.
 
 Vale notar, no entanto, que foram poucos os testes realizados considerando outros classificadores. Além disso, os parâmetros testados para cada um deles foram obtidos de forma empírica, tentando alterar seus valores e observar a alteração nos resultados. Assim, não é possível afirmar de forma categórica que a floresta aleatória se desempenha melhor para o caso estudado e análises mais aprofundadas quanto à seleção do classificador e de seus parâmetros seriam necessárias.
 
@@ -236,9 +236,21 @@ Quando utilizamos os dois cenários em conjunto, obtivemos resultados para o tes
 
 ## Conclusão
 
+Os resultados obtidos para o modelo proposto não foram muito bons, especialmente na classificação dos indivíduos que vieram a óbito em decorrência da NF. No entanto, levando em conta as diversas limitações discutidas anteriormente, consideramos que o modelo se desempenhou razoavelmente e foi satisfatório para a proposta do projeto. Através dele, foi possível explorar, mesmo que superficialmente, alguns modelos de aprendizagem de máquina e ter um vislumbre das problematicas envolvidas no desenvolvimento de modelos preditivos deste tipo, indo desde a extração e seleção de _features_ relevantes até a seleção do tipo de modelo a ser utilizado e seus parâmetros de configuração.
+
+Os testes realizados com os diferentes cenários reafirmam a dificuldade em construir um modelo preditivo na área da saúde que possa realmente ser utilizado no dia-a-dia clínico. Não apenas o modelo precisa ter um bom desempenho com os dados para os quais foi treinado e diante de um cenário que costuma ser bastante complexo, mas também é necessário garantir que ele tenha uma boa capacidade de generalização, afinal, ele muito provavelmente seria utilizado em diferentes contextos e para grupos de pacientes com características muito distintas.
+
 ### Principais Desafios Enfrentados e Lições Aprendidas
 
+Um dos principais desafios enfrentados se deu quanto à extração de _features_. A grande quantidade de informações disponíveis, a necessidade de atrelar dados de diferentes tabelas e trabalhar com datas, além de definir quais dados estavam relacionados com o proposta e faziam sentido de serem utilizados para a geração do modelo, se mostraram bastante desafiadoras. Dessa forma, acabamos consumindo bastante do tempo investido no projeto nos processos de filtragem e análise/seleção dos dados, mesmo assim resultando em um número pequeno de _features_ extraídas para o treinamento do modelo. Nesse sentido, fica como lição a importância de trabalhar em conjunto com um especialista da área, o que possivelmente teria facilitado o processo de extração dos dados com a indicação de quais informações seriam mais relevantes para a proposta.
+
+Outro desafio foi a utilização do Orange. Apesar de ser uma ferramenta bastante intuitiva e fácil de usar, não tínhamos muita experiência com ela. Finalizamos esse projeto com muito mais conhecimentos sobre a ferramenta e com uma visão mais ampla de sua praticidade, mas também de suas limitações - afinal, a utilização dos widgets pode ser um pouco limitante por serem "caixinhas" pré-prontas sem uma grande possibilidade de modificações e personalizações. Ainda, tivemos um pouco de dificuldade no processo de seleção dos classificadores e de seus parâmetros e acabamos lidando com eles de forma empírica.
+
+Por fim, o próprio GitHub foi um desafio. Apesar de sua ampla utilização, nunca tínhamos realizado projetos desse tipo com seu auxílio. Em contrapartida, esse é um aprendizado muito útil que com certeza será de grande valia para projetos futuros.
+
 ### Trabalhos Futuros
+
+Como comentado anteriormente, seria muito interessante testar o modelo proposto em uma amostra maior de pacientes e diversificar mais as _features_ utilizadas. Ainda, diferentes tipos de classificadores poderiam ser melhor explorados, talvez utilizando algum processo automático para escolher os melhores parâmetros para cada um e utilizando estratégias para lidar com o desbalanceamento das classes. Outro ponto que valeria um investimento futuro seria analisar quais _features_ foram mais importantes e significativas para a tarefa de classificação, indicando possíveis fatores de risco para a mortalidade em decorrência da NF e talvez até novos caminhos de estudos.
 
 ## Referências Bibliográficas
 
@@ -251,3 +263,7 @@ Quando utilizamos os dois cenários em conjunto, obtivemos resultados para o tes
 [^4]: DE NAUROIS, J. et al. Management of febrile neutropenia: ESMO clinical practice guidelines. Annals of Oncology, v. 21, p. v252-v256, 2010.
 
 [^5]: Levofloxacin - Uses, Side Effects, and More. Disponível em <https://www.webmd.com/drugs/2/drug-14495-8235/levofloxacin-oral/levofloxacin-oral/details>. Último acesso em 23/05/2022.
+
+[^6]: Julia Kho. Why Random Forest is My Favorite Machine Learning Model. Disponível em <https://towardsdatascience.com/why-random-forest-is-my-favorite-machine-learning-model-b97651fa3706>. Último acesso em 24/05/2022.
+
+[^7]: Naresh Kumar. Advantages and Disadvantages of Random Forest Algorithm in Machine Learning. Disponível em <http://theprofessionalspoint.blogspot.com/2019/02/advantages-and-disadvantages-of-random.html>. Último acesso em 24/05/2022.
