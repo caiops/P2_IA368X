@@ -136,6 +136,34 @@ No cenário 01, o gênero dos pacientes estava quase completamente balanceado (7
 
 Quanto à etnia dos pacientes, temos apenas pacientes hispânicos ou não hispânicos, sendo a grande maioria de não hispânicos (124 ou 89.2% no cenário 01 e 115 ou 98.3% no cenário 02). Enquanto no cenário 02 todos os pacientes que morreram foram não hispânicos, no cenário 01 53.3% dos hispânicos morreram contra 14.5% dos não hispânicos.
 
+As imagens abaixo apresentam a distribuição da raça dos pacientes em cada cenário, divididas pelo desfecho (0 para os que sobreviveram e 1 para os que morreram). No cenário 01, 113 pacientes são brancos (81.3%) seguidos por 13 pacientes negros (9.4%), enquanto no cenário 02 temos 82 pacientes brancos (70.1%), seguidos por 10 pacientes nativos (8.5%).
+
+Cenário 01:
+
+![Distribuição de raça, dividida por desfecho, cenário 01](/assets/race_01.jpg)
+
+Cenário 02:
+
+![Distribuição de raça, dividida por desfecho, cenário 02](/assets/race_02.jpg)
+
+A tabela abaixo apresenta algumas informações sobre a idade dos pacientes. Os dados parecem indicar que pacientes mais novos possuem mais risco de virem a óbito em decorrência da NF.
+
+| Cenário | Idade mínima | Idade máxima | Média | Média, desfecho de morte | Média, desfecho de sobrevivência |
+|:-------:|:------------:|:------------:|:-----:|:------------------------:|:--------------------------------:|
+|    01   |       0      |      21      |  8.14 |             6            |               8.64               |
+|    02   |       0      |      21      |  8.02 |           5.31           |               8.36               |
+
+Em relação ao diagnóstico de bacteremia, 37 pacientes (26.6%) apresentaram a condição no cenário 01 e 40 (34.2%) no cenário 02. Ainda, 27% dos pacientes com bacteremia morreram no cenário 01 contra 15.7% dos que não tiveram. Já no cenário 02, 17.5% dos pacientes com bacteremia morreram, contra 7.8% dos que não tiveram. Ou seja, os dados parecem indicar que pacientes com bacteremia possuem mais chances de vir a óbito em decorrência da NF.
+
+A tabela abaixo apresenta algumas informações sobre a quantidade de encontros do tipo _wellness_ pelos quais os pacientes passaram. Os dados parecem indicar que pacientes que passaram por mais encontros do tipo possuem mais risco de virem a óbito em decorrência da NF.
+
+| Cenário \ Encontros do tipo _wellness_ | Nº mínimo | Nº máximo | Média | Média, desfecho de morte | Média, desfecho de sobrevivência |
+|:--------------------------------------:|:---------:|:---------:|:-----:|:------------------------:|:--------------------------------:|
+|                   01                   |     0     |     17    |  7.1  |           9.42           |               6.57               |
+|                   02                   |     0     |     17    |  7.27 |           10.31          |               6.89               |
+
+Os pacientes do cenário 01 tiveram entre 0 e 7 encontros ambulatoriais por conta de sintomas, com média de 1.35 encontros por paciente. Já no cenário 02, foram entre 0 e 10 encontros do tipo, com média de 1.39 encontros por paciente.
+
 
 
 ### Resultados de Predição
