@@ -164,7 +164,11 @@ A tabela abaixo apresenta algumas informações sobre a quantidade de encontros 
 
 Os pacientes do cenário 01 tiveram entre 0 e 7 encontros ambulatoriais por conta de sintomas, com média de 1.35 encontros por paciente. Já no cenário 02, foram entre 0 e 10 encontros do tipo, com média de 1.39 encontros por paciente.
 
+Quanto ao medicamento (levofloxacin 500 MG Oral Tablet), 37 paciente (26.6%) receberam a prescrição no cenário 01 e 29 pacientes (24.8%) no cenário 02. Ainda, 10.8% dos pacientes que tomaram o medicamento morreram no cenário 01, contra 21.6% dos que não tomaram. Já no cenário 02, 10.3% dos pacientes que tomaram o medicamento morreram, contra 11.4% dos que não tomaram. Assim, parece haver menos chances de óbito para os pacientes que tomaram o medicamento, mas essa relação é muito mais acentuada no cenário 01 e quase inexistente no cenário 02.
 
+As observações de contagem de neutrófilos variaram entre 252.8 e 497.7 no cenário 01, com média de 380.5. No cenário 02, a variação foi de 250.6 a 499.9, com média de 378.2. É interessante notar que a unidade definida na tabela de observações para a contagem de neutrófilos é de 10<sup>3</sup>/uL, mas considerando a definição da NF e a grandeza dos valores apresentados, nos parece que a unidade está na verdade em uL.
+
+Por fim, a temperatura corporal dos pacientes variou entre 100.4 e 103°F (entre 38 e 39.4°C) no cenário 01, com média de 101.7°F (38.7°C). Já no cenário 02, a variação de temperaturas foi exatamente a mesma, com média também praticamente indêntica.
 
 ### Resultados de Predição
 
