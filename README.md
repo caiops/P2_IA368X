@@ -236,9 +236,11 @@ Quando utilizamos os dois cenários em conjunto, obtivemos resultados para o tes
 
 ## Conclusão
 
-Os resultados obtidos para o modelo proposto não foram muito bons, especialmente na classificação dos indivíduos que vieram a óbito em decorrência da NF. No entanto, levando em conta as diversas limitações discutidas anteriormente, consideramos que o modelo se desempenhou razoavelmente e foi satisfatório para a proposta do projeto. Através dele, foi possível explorar, mesmo que superficialmente, alguns modelos de aprendizagem de máquina e ter um vislumbre das problematicas envolvidas no desenvolvimento de modelos preditivos deste tipo, indo desde a extração e seleção de _features_ relevantes até a seleção do tipo de modelo a ser utilizado e seus parâmetros de configuração.
+Os resultados obtidos para o modelo proposto não foram muito bons, especialmente na classificação dos indivíduos que vieram a óbito em decorrência da NF. No entanto, levando em conta as diversas limitações discutidas anteriormente, consideramos que o modelo se desempenhou razoavelmente e foi satisfatório para a proposta do projeto. Através dele, foi possível explorar, mesmo que superficialmente, alguns modelos de aprendizagem de máquina e ter um vislumbre das problemáticas envolvidas no desenvolvimento de modelos preditivos deste tipo, indo desde a extração e seleção de _features_ relevantes até a seleção do tipo de modelo a ser utilizado e seus parâmetros de configuração - além dos cuidados que devem ser tomados quanto aos conjuntos de treinamento, validação e teste para obter estimativas de desempenho não enviesadas e evitar que o modelo acabe sobreajustado aos dados, se tornando muito específico a eles.
 
 Os testes realizados com os diferentes cenários reafirmam a dificuldade em construir um modelo preditivo na área da saúde que possa realmente ser utilizado no dia-a-dia clínico. Não apenas o modelo precisa ter um bom desempenho com os dados para os quais foi treinado e diante de um cenário que costuma ser bastante complexo, mas também é necessário garantir que ele tenha uma boa capacidade de generalização, afinal, ele muito provavelmente seria utilizado em diferentes contextos e para grupos de pacientes com características muito distintas.
+
+Ainda, a utilização de dados sintéticos se mostrou promissora. Apesar de algumas limitações, foi possível extrair _features_ interessantes e relevantes a partir dos dados sintéticos de pacientes...
 
 ### Principais Desafios Enfrentados e Lições Aprendidas
 
